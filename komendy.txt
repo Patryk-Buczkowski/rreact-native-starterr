@@ -1,0 +1,39 @@
+./gradlew signingreport => dla uzyskania sha-1
+
+5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+
+Podsumowanie najważniejszych punktów
+Dwóch klientów w Google Cloud Console: Potrzebujesz zarówno klienta na Androida (do weryfikacji aplikacji mobilnej za pomocą SHA-1), jak i klienta internetowego (do uwierzytelniania w Appwrite).
+
+Poprawna konfiguracja w app.json: Musisz dodać klucz android.config.googleSignIn.clientId z identyfikatorem klienta internetowego, aby aplikacja poprawnie przekierowywała użytkownika po zalogowaniu.
+
+Właściwy kod w appwrite.ts: W GoogleSignin.configure() powinieneś użyć identyfikatora klienta z platformy Android.
+
+Uwierzytelnianie w Appwrite: W konsoli Appwrite w ustawieniach dostawców OAuth2 musisz wprowadzić dane z klienta internetowego.
+
+Przebudowa aplikacji: Po każdej zmianie w konfiguracji Google Cloud lub pliku app.json, musisz ponownie przebudować aplikację, aby zmiany zostały uwzględnione w kodzie natywnym.
+
+Jeśli po wykonaniu tych kroków problem nadal występuje, najprawdopodobniej problemem jest niepoprawny klucz SHA-1. W takim wypadku musisz ponownie go wygenerować i wkleić w Google Cloud Console.
+
+
+Aby uruchomić aplikację z logowaniem Google, musisz stworzyć i użyć Development Build:
+
+Upewnij się, że masz zainstalowane Expo CLI i EAS.
+
+Wygeneruj Development Build, używając komendy: => eas build -p android --profile development.
+
+Zainstaluj wygenerowaną aplikację na swoim urządzeniu.
+
+Uruchom serwer developerski za pomocą => expo start --dev-client.
+
+Zeskanuj kod QR i uruchom aplikację na swoim urządzeniu za pomocą Development Build, a nie Expo Go.
+
+Po przejściu na Development Build i poprawnym skonfigurowaniu kluczy SHA-1 oraz identyfikatorów klientów, logowanie Google powinno zacząć działać.
+
+Ten film objaśnia kluczowe różnice między Expo Go i Development Builds, co pomoże Ci zrozumieć, dlaczego musisz przejść na Development Build, aby testować logowanie Google.
+
+npm install -g expo-cli eas-cli
+
+npx expo start --dev-client //po zainstalowanej apk odpalic ta komende
