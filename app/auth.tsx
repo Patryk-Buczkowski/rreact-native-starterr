@@ -18,7 +18,7 @@ import { handleGoogleSignIn } from "@/lib/google";
 
 export default function AuthScreen() {
   const { signData, handleInputs, error, setError } = useAuthStore();
-
+console.log('first')
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
