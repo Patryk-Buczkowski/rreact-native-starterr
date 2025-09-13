@@ -1,42 +1,39 @@
 // _layout.tsx
-import { Stack, useRouter, useSegments } from 'expo-router';
-import { useEffect } from 'react';
-
-import * as Linking from "expo-linking";
+import useAuthStore from "@/zustand/useAuthStore";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { useEffect } from "react";
 
 function RouteGuard({ children }: { children: React.ReactNode }) {
-    const isAuth = false;
-    const segments = useSegments();
-    const router = useRouter();
+  const segments = useSegments();
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const isAuth = !!user;
+  console.log("isAuth", isAuth);
+  console.log("user", user);
 
-    useEffect(() => {
-  const subscription = Linking.addEventListener("url", (event) => {
-    console.log("Redirect URL:", event.url);
-    // Tu możesz obsłużyć dodatkowe akcje po redirect
-  });
+  useEffect(() => {
+    if (segments.length > 0) {
+      const inAuthGroup = segments[0] === "auth";
 
-  return () => subscription.remove();
-}, []);
+      if (!user && !inAuthGroup) {
+        // nie zalogowany -> wywal na auth
+        router.replace("/auth");
+      } else if (user && inAuthGroup) {
+        // zalogowany, ale dalej w /auth -> przekieruj na home
+        router.replace("/");
+      }
+    }
+  }, [isAuth, router, segments, user]);
 
-    useEffect(() => {
-        // sprawdź, czy segments są załadowane, zanim sprawdzisz pierwszy segment.
-        if (segments.length > 0) {
-            const inAuthGroup = segments[0] === 'auth';
-            if (!isAuth && !inAuthGroup) {
-                router.replace('/auth');
-            }
-        }
-    }, [isAuth, segments]);
-
-    return children;
+  return children;
 }
 
 export default function RootLayout() {
-    return (
-        <RouteGuard>
-            <Stack screenOptions={{ title: 'Hejka and create acccount' }} />
-        </RouteGuard>
-    );
+  return (
+    <RouteGuard>
+      <Stack screenOptions={{ title: "Hejka" }} />
+    </RouteGuard>
+  );
 }
 
 // RouteGuard używa useEffect, który jest wywoływany, gdy komponent się ładuje.

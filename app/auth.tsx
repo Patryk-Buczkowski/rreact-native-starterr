@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   View,
-  Linking,
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
@@ -15,9 +14,10 @@ import useAuthStore from "@/zustand/useAuthStore";
 import { account } from "@/lib/appwrite";
 import { AppwriteException, ID } from "react-native-appwrite";
 import { handleGoogleSignIn } from "@/lib/google";
+import testAuth from "./x";
 
 export default function AuthScreen() {
-  const { signData, handleInputs, error, setError } = useAuthStore();
+  const { signData, handleInputs, error, setError, user } = useAuthStore();
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
@@ -25,7 +25,8 @@ export default function AuthScreen() {
     setIsSignUp((prev) => !prev);
   };
 
-  const handleAuth = async () => {
+  const handleSingUp = async () => {
+    console.log("sing up");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!signData.email || !signData.password) {
@@ -58,24 +59,28 @@ export default function AuthScreen() {
     console.log("Auth data:", signData);
   };
 
-  useEffect(() => {
-  const handleDeepLink = async (event: any) => {
-    const url = event?.url ?? event?.nativeEvent?.url;
+  const handleSingIn = async () => {
+    // await account.deleteSession("current");
+    const { setUser } = useAuthStore.getState();
+    console.log("sign in");
+    try {
+      const promise = await account.createEmailPasswordSession({
+        email: `${signData.email}`,
+        password: `${signData.password}`,
+      });
+      console.log("promise", promise);
+      setUser({
+        $id: promise.userId,
+        email: promise.providerUid,
+      });
 
-    if (url && typeof url === "string" && url.startsWith("exp+myapp://success")) {
-      try {
-        // Tutaj pobierasz zalogowanego użytkownika
-        const user = await account.get();
-        console.log("✅ Zalogowany użytkownik:", user);
-      } catch (err) {
-        console.error("❌ Błąd pobierania usera:", err);
-      }
+      const currentUser = await account.get();
+
+      setUser(currentUser);
+    } catch (error) {
+      console.error("Error signUp", error);
     }
   };
-
-  const subscription = Linking.addEventListener("url", handleDeepLink);
-  return () => subscription.remove();
-}, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -120,7 +125,7 @@ export default function AuthScreen() {
           )}
 
           <Button
-            onPress={handleAuth}
+            onPress={isSignUp ? handleSingIn : handleSingUp}
             style={style.buttonSubmit}
             mode="contained"
           >
@@ -144,6 +149,11 @@ export default function AuthScreen() {
             <AntDesign name="google" size={24} color="black" />
             <Text style={style.buttonText}>Zaloguj przez Google</Text>
           </TouchableOpacity>
+
+          <Button onPress={testAuth} mode="contained">
+            {" "}
+            test{" "}
+          </Button>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -183,6 +193,7 @@ const style = StyleSheet.create({
     borderRadius: 100,
     borderColor: "#666",
     borderWidth: 1,
+    marginBottom: 10,
   },
 });
 

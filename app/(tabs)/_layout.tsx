@@ -1,5 +1,4 @@
 import { Tabs } from "expo-router";
-// import { Text } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -29,6 +28,20 @@ export default function RootLayout() {
                 <FontAwesome size={24} color={color} name="android" />
               ) : (
                 <AntDesign name="android" size={24} color={color} />
+              );
+            },
+          }}
+        />
+
+        <Tabs.Screen
+          name="logout"
+          options={{
+            title: "Logout",
+            tabBarIcon: ({ color, focused }) => {
+              return focused ? (
+                <FontAwesome size={24} color={color} name="sign-out" />
+              ) : (
+                <AntDesign name="logout" size={24} color={color} />
               );
             },
           }}
