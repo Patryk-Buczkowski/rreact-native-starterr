@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "com.ganja.zadania",
+    "name": "Zadania",
     "slug": "starter",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,7 +12,15 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.ganja.zadania",      
+      "package": "com.ganja.zadania",
+      "versionCode": 2,
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
