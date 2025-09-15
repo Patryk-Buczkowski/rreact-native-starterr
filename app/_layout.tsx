@@ -1,40 +1,41 @@
-// _layout.tsx
-import useAuthStore from "@/zustand/useAuthStore";
-import { Stack, useRouter, useSegments } from "expo-router";
-import { useEffect } from "react";
+// import useAuthStore from "@/zustand/useAuthStore";
+// import { Stack, useRouter, useSegments } from "expo-router";
+// import { useEffect } from "react";
 
-function RouteGuard({ children }: { children: React.ReactNode }) {
-  const segments = useSegments();
-  const router = useRouter();
-  const { user } = useAuthStore();
-  const isAuth = !!user;
-  console.log("isAuth", isAuth);
-  console.log("user", user);
+// function RouteGuard({ children }: { children: React.ReactNode }) {
+//   const segments = useSegments();
+//   const router = useRouter();
+//   const { user } = useAuthStore();
+//   const isAuth = !!user;
 
-  useEffect(() => {
-    if (segments.length > 0) {
-      const inAuthGroup = segments[0] === "auth";
+//   useEffect(() => {
+//     if (!segments) return;
 
-      if (!user && !inAuthGroup) {
-        // nie zalogowany -> wywal na auth
-        router.replace("/auth");
-      } else if (user && inAuthGroup) {
-        // zalogowany, ale dalej w /auth -> przekieruj na home
-        router.replace("/");
-      }
-    }
-  }, [isAuth, router, segments, user]);
+//     const inAuthGroup = segments[0] === "auth";
 
-  return children;
-}
+//     if (!user && !inAuthGroup) {
+//       router.replace("/auth");
+//     } else if (user && inAuthGroup) {
+//       router.replace("/");
+//     }
+//   }, [isAuth, router, segments, user]);
+//   return children;
+// }
+
+// export default function RootLayout() {
+//   return (
+//     <RouteGuard>
+//       <Stack />
+//     </RouteGuard>
+//   );
+// }
+
+import { Slot } from "expo-router";
 
 export default function RootLayout() {
-  return (
-    <RouteGuard>
-      <Stack screenOptions={{ title: "Hejka" }} />
-    </RouteGuard>
-  );
+  return <Slot />;
 }
+
 
 // RouteGuard używa useEffect, który jest wywoływany, gdy komponent się ładuje.
 

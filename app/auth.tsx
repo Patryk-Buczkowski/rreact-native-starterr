@@ -14,10 +14,9 @@ import useAuthStore from "@/zustand/useAuthStore";
 import { account } from "@/lib/appwrite";
 import { AppwriteException, ID } from "react-native-appwrite";
 import { handleGoogleSignIn } from "@/lib/google";
-import testAuth from "./x";
 
 export default function AuthScreen() {
-  const { signData, handleInputs, error, setError, user } = useAuthStore();
+  const { signData, handleInputs, error, setError,  } = useAuthStore();
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
@@ -150,10 +149,6 @@ export default function AuthScreen() {
             <Text style={style.buttonText}>Zaloguj przez Google</Text>
           </TouchableOpacity>
 
-          <Button onPress={testAuth} mode="contained">
-            {" "}
-            test{" "}
-          </Button>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
