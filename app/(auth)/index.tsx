@@ -1,22 +1,22 @@
+import { account } from "@/lib/appwrite";
+import { handleGoogleSignIn } from "@/lib/google";
+import useAuthStore from "@/zustand/useAuthStore";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { useState } from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  View,
   StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { Button, Text, TextInput, useTheme } from "react-native-paper";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import useAuthStore from "@/zustand/useAuthStore";
-import { account } from "@/lib/appwrite";
 import { AppwriteException, ID } from "react-native-appwrite";
-import { handleGoogleSignIn } from "@/lib/google";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function AuthScreen() {
-  const { signData, handleInputs, error, setError,  } = useAuthStore();
+  const { signData, handleInputs, error, setError } = useAuthStore();
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
@@ -41,12 +41,11 @@ export default function AuthScreen() {
     setError("");
 
     try {
-      const result = await account.create(
+      await account.create(
         ID.unique(),
         signData.email,
         signData.password
       );
-      console.log("Utworzono uytkownika", result);
     } catch (error) {
       if (error instanceof AppwriteException && error.code === 409) {
         console.error("Błąd: Ten adres e-mail jest już w użyciu.");
@@ -55,35 +54,34 @@ export default function AuthScreen() {
       setError("Something went wrong with authentication");
       console.error(error);
     }
-    console.log("Auth data:", signData);
   };
 
   const handleSingIn = async () => {
     const { setUser } = useAuthStore.getState();
 
-  const getSessionWithTimeout = async (timeoutMs: number) => {
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(false);
-      }, timeoutMs);
-    });
+    const getSessionWithTimeout = async (timeoutMs: number) => {
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(false);
+        }, timeoutMs);
+      });
 
-    try {
-      const currentSession = await Promise.race([
-        account.getSession({ sessionId: "current" }),
-        timeoutPromise,
-      ]);
-      return currentSession;
-    } catch (error) {
-      console.error('error',error)
-    }
-  };
+      try {
+        const currentSession = await Promise.race([
+          account.getSession({ sessionId: "current" }),
+          timeoutPromise,
+        ]);
+        return currentSession;
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
 
-  const currentSession = await getSessionWithTimeout(2000);
+    const currentSession = await getSessionWithTimeout(2000);
 
     if (currentSession) {
-      console.log('weszło w if current session')
-      await account.deleteSession({sessionId: 'current'})
+      ("weszło w if current session");
+      await account.deleteSession({ sessionId: "current" });
     }
 
     try {
@@ -91,8 +89,7 @@ export default function AuthScreen() {
         email: `${signData.email}`,
         password: `${signData.password}`,
       });
-      console.log("promise", promise);
-      
+
       setUser({
         $id: promise.userId,
         email: promise.providerUid,
@@ -142,7 +139,13 @@ export default function AuthScreen() {
           />
           {error && (
             <View>
-              <Text style={{ color: theme.colors.error, fontWeight: '600', marginBottom: 16 }}>
+              <Text
+                style={{
+                  color: theme.colors.error,
+                  fontWeight: "600",
+                  marginBottom: 16,
+                }}
+              >
                 {error}
               </Text>
             </View>
@@ -173,7 +176,6 @@ export default function AuthScreen() {
             <AntDesign name="google" size={24} color="black" />
             <Text style={style.buttonText}>Zaloguj przez Google</Text>
           </TouchableOpacity>
-
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
