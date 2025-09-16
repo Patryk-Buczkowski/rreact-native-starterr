@@ -4,19 +4,18 @@ import { useEffect } from "react";
 
 export default function RootLayout() {
   const { user } = useAuthStore();
-  const router = useRouter()
-  console.log('user', user)
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
-    router.replace('/(tabs)')
-  }
-  }, [router, user])
+      router.replace("/tabs");
+    }
+  }, [router, user]);
 
   return (
     <Stack>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
+      <Stack.Screen name="tabs" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet } from "react-native";
 export default function Index() {
   return (
     <View style={styles.home}>
-      <Text>Index pagee</Text>
+      <Text>served info 😎😂</Text>
     </View>
   );
 }

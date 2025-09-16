@@ -64,7 +64,7 @@ export default function AuthScreen() {
   const getSessionWithTimeout = async (timeoutMs: number) => {
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
-        reject(new Error('Timeout'));
+        reject(false);
       }, timeoutMs);
     });
 
@@ -142,7 +142,7 @@ export default function AuthScreen() {
           />
           {error && (
             <View>
-              <Text style={{ color: theme.colors.error, marginBottom: 16 }}>
+              <Text style={{ color: theme.colors.error, fontWeight: '600', marginBottom: 16 }}>
                 {error}
               </Text>
             </View>

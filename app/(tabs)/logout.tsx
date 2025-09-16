@@ -10,9 +10,9 @@ export default function LogoutScreen() {
 
   const handleLogout = async () => {
     try {
-      await account.deleteSession("current"); // wylogowanie z Appwrite
-      setUser(null); // reset user w Zustand
-      router.replace("/(auth)");
+      await account.deleteSession({sessionId: "current"});
+      setUser(null);
+      router.replace("/auth");
     } catch (error) {
       console.error("Błąd podczas wylogowywania:", error);
     }
