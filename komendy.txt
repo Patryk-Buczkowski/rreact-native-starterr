@@ -22,7 +22,7 @@ Aby uruchomić aplikację z logowaniem Google, musisz stworzyć i użyć Develop
 
 Upewnij się, że masz zainstalowane Expo CLI i EAS.
 
-Wygeneruj Development Build, używając komendy: => eas build -p android --profile development.
+Wygeneruj Development Build, używając komendy: => eas build -p android --profile development 'production'.
 
 Zainstaluj wygenerowaną aplikację na swoim urządzeniu.
 
@@ -37,3 +37,5 @@ Ten film objaśnia kluczowe różnice między Expo Go i Development Builds, co p
 npm install -g expo-cli eas-cli
 
 npx expo start --dev-client //po zainstalowanej apk odpalic ta komende
+
+adb logcat *:E => błedy

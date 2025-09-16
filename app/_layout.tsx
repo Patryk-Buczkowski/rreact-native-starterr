@@ -1,40 +1,35 @@
-// import useAuthStore from "@/zustand/useAuthStore";
-// import { Stack, useRouter, useSegments } from "expo-router";
-// import { useEffect } from "react";
+import useAuthStore from "@/zustand/useAuthStore";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { useEffect } from "react";
 
-// function RouteGuard({ children }: { children: React.ReactNode }) {
-//   const segments = useSegments();
-//   const router = useRouter();
-//   const { user } = useAuthStore();
-//   const isAuth = !!user;
+function RouteGuard({ children }: { children: React.ReactNode }) {
+  const segments = useSegments();
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const isAuth = !!user;
 
-//   useEffect(() => {
-//     if (!segments) return;
+  useEffect(() => {
+    if (!segments) return;
 
-//     const inAuthGroup = segments[0] === "auth";
+    const inAuthGroup = segments[0] === "auth";
 
-//     if (!user && !inAuthGroup) {
-//       router.replace("/auth");
-//     } else if (user && inAuthGroup) {
-//       router.replace("/");
-//     }
-//   }, [isAuth, router, segments, user]);
-//   return children;
-// }
-
-// export default function RootLayout() {
-//   return (
-//     <RouteGuard>
-//       <Stack />
-//     </RouteGuard>
-//   );
-// }
-
-import { Slot } from "expo-router";
+    if (!user && !inAuthGroup) {
+      router.replace("/auth");
+    } else if (user && inAuthGroup) {
+      router.replace("/");
+    }
+  }, [isAuth, router, segments, user]);
+  return children;
+}
 
 export default function RootLayout() {
-  return <Slot />;
+  return (
+    <RouteGuard>
+      <Stack />
+    </RouteGuard>
+  );
 }
+
 
 
 // RouteGuard używa useEffect, który jest wywoływany, gdy komponent się ładuje.
