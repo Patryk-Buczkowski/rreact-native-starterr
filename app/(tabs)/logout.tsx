@@ -12,7 +12,7 @@ export default function LogoutScreen() {
     try {
       await account.deleteSession("current"); // wylogowanie z Appwrite
       setUser(null); // reset user w Zustand
-      router.replace("/auth"); // przekierowanie na ekran logowania
+      router.replace("/(auth)");
     } catch (error) {
       console.error("Błąd podczas wylogowywania:", error);
     }

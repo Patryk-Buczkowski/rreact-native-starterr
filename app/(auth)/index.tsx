@@ -59,15 +59,40 @@ export default function AuthScreen() {
   };
 
   const handleSingIn = async () => {
-    // await account.deleteSession("current");
     const { setUser } = useAuthStore.getState();
-    console.log("sign in");
+
+  const getSessionWithTimeout = async (timeoutMs: number) => {
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Timeout'));
+      }, timeoutMs);
+    });
+
+    try {
+      const currentSession = await Promise.race([
+        account.getSession({ sessionId: "current" }),
+        timeoutPromise,
+      ]);
+      return currentSession;
+    } catch (error) {
+      console.error('error',error)
+    }
+  };
+
+  const currentSession = await getSessionWithTimeout(2000);
+
+    if (currentSession) {
+      console.log('weszło w if current session')
+      await account.deleteSession({sessionId: 'current'})
+    }
+
     try {
       const promise = await account.createEmailPasswordSession({
         email: `${signData.email}`,
         password: `${signData.password}`,
       });
       console.log("promise", promise);
+      
       setUser({
         $id: promise.userId,
         email: promise.providerUid,

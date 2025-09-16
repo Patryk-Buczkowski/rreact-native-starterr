@@ -5,7 +5,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export default function RootLayout() {
   return (
     <>
-      <Tabs screenOptions={{ tabBarActiveTintColor: "purple" }}>
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: "purple",
+          headerShadowVisible: false,
+        }}
+      >
         <Tabs.Screen
           name="index"
           options={{
@@ -15,19 +20,6 @@ export default function RootLayout() {
                 <FontAwesome size={24} color={color} name="home" />
               ) : (
                 <AntDesign name="home" size={24} color="black" />
-              );
-            },
-          }}
-        />
-        <Tabs.Screen
-          name="login"
-          options={{
-            title: "Login",
-            tabBarIcon: ({ color, focused }) => {
-              return focused ? (
-                <FontAwesome size={24} color={color} name="android" />
-              ) : (
-                <AntDesign name="android" size={24} color={color} />
               );
             },
           }}
