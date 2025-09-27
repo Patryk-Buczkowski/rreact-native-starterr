@@ -1,5 +1,18 @@
-import { SafeAreaView, View } from "react-native";
-import { Button, HelperText, SegmentedButtons, TextInput } from "react-native-paper";
+import {
+  SafeAreaView,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
+import {
+  Button,
+  HelperText,
+  SegmentedButtons,
+  TextInput,
+} from "react-native-paper";
 import { createHabit } from "@/lib/appwrite";
 import React from "react";
 import { FrequencyType, HabitType } from "@/types/type_habit";
@@ -39,61 +52,76 @@ export default function CreateScreen() {
   });
 
   return (
-    <View style={{padding:9}}>
-        <Formik
-          initialValues={initialValues}
-          validateOnChange
-          validationSchema={validationSchemaTask}
-          onSubmit={(values, { resetForm }) => {
-            handleCrateHabit(values);
-            resetForm();
-          }}
-        >
-          {({
-            handleChange,
-            handleBlur,
-            setFieldValue,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <>
-              <TextInput
-                value={values.title}
-                onChangeText={handleChange("title")}
-                onBlur={handleBlur("title")}
-                aria-label="title"
-                placeholder="Type task title"
-                style={{ marginBottom: 15 }}
-              />
-              {errors.title && (<HelperText type="error">{errors.title}</HelperText>)}
-              <TextInput
-                value={values.description}
-                onChangeText={handleChange("description")}
-                onBlur={handleBlur("description")}
-                placeholder="Type description for task"
-                style={{ marginBottom: 15 }}
-              />
-              {errors.description && (<HelperText type="error">{errors.description}</HelperText>)}
-              <SafeAreaView>
-                <SegmentedButtons
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, justifyContent: "center" }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View style={{ padding: 9 }}>
+          <Formik
+            initialValues={initialValues}
+            validateOnChange
+            validationSchema={validationSchemaTask}
+            onSubmit={(values, { resetForm }) => {
+              handleCrateHabit(values);
+              resetForm();
+            }}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              setFieldValue,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <>
+                <TextInput
+                  value={values.title}
+                  onChangeText={handleChange("title")}
+                  onBlur={handleBlur("title")}
+                  aria-label="title"
+                  placeholder="Type task title"
                   style={{ marginBottom: 15 }}
-                  value={values.frequency}
-                  onValueChange={(val) => setFieldValue("frequency", val)}
-                  buttons={frequencies.map((item, index) => ({
-                    value: item,
-                    label: item.charAt(0).toUpperCase() + item.slice(1),
-                    icon: icons[index],
-                  }))}
                 />
-              </SafeAreaView>
-              <Button disabled={!values.description || !values.title} onPress={() => handleSubmit} mode="outlined">
-                Add
-              </Button>
-            </>
-          )}
-        </Formik>
-    </View>
+                {touched.title && errors.title && (
+                  <HelperText type="error">{errors.title}</HelperText>
+                )}
+                <TextInput
+                  value={values.description}
+                  onChangeText={handleChange("description")}
+                  onBlur={handleBlur("description")}
+                  placeholder="Type description for task"
+                  style={{ marginBottom: 15 }}
+                />
+                {touched.description && errors.description && (
+                  <HelperText type="error">{errors.description}</HelperText>
+                )}
+                <SafeAreaView>
+                  <SegmentedButtons
+                    style={{ marginBottom: 15 }}
+                    value={values.frequency}
+                    onValueChange={(val) => setFieldValue("frequency", val)}
+                    buttons={frequencies.map((item, index) => ({
+                      value: item,
+                      label: item.charAt(0).toUpperCase() + item.slice(1),
+                      icon: icons[index],
+                    }))}
+                  />
+                </SafeAreaView>
+                <Button
+                  disabled={!values.description || !values.title}
+                  onPress={() => handleSubmit()}
+                  mode="outlined"
+                >
+                  Add
+                </Button>
+              </>
+            )}
+          </Formik>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }

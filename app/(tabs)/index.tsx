@@ -1,29 +1,35 @@
-import { Text, View, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+} from "react-native";
+import KeyboardWrapper from "../components/keyboardWrapper";
 
 export default function Index() {
   return (
-    <View style={styles.home}>
-      <Text style={styles.login}>served info 😎😂</Text>
-    </View>
+    <KeyboardWrapper>
+      <View>
+        <Text>served info 😎😂</Text>
+      </View>
+    </KeyboardWrapper>
   );
 }
 
-const styles = StyleSheet.create({
-  home: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  login: {
-    width: 100,
-    borderRadius: 8,
-    height: 25,
-    borderWidth: 1,
-    textAlign: "center",
-    justifyContent: "center",
-    backgroundColor: "navy",
-    borderColor: "yellow",
-    color: "green",
-    marginBottom: 10,
-  },
-});
+// const styles = StyleSheet.create({
+//   home: {
+//     flex: 1,
+//     justifyContent: "center",
+//     // alignItems: "center",
+//   },
+//   login: {
+//     width: 100,
+//     borderRadius: 8,
+//     height: 25,
+//     borderWidth: 1,
+//     textAlign: "center",
+//     justifyContent: "center",
+//     backgroundColor: "navy",
+//     borderColor: "yellow",
+//     color: "green",
+//     marginBottom: 10,
+//   },
+// });
