@@ -80,7 +80,7 @@ export default function AuthScreen() {
     const currentSession = await getSessionWithTimeout(2000);
 
     if (currentSession) {
-      ("weszło w if current session");
+      console.log("weszło w if current session");
       await account.deleteSession({ sessionId: "current" });
     }
 

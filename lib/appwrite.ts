@@ -1,18 +1,68 @@
-import { Account, Client } from "react-native-appwrite";
+import {
+  Account,
+  Client,
+  Databases,
+  ID,
+  TablesDB,
+} from "react-native-appwrite";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import Constants from "expo-constants";
+import { AppConfigExtra } from "@/env";
+import { Habit } from "@/types/type_habit";
+
+const extra = Constants.expoConfig?.extra as AppConfigExtra;
+
+const APPWRITE_PROJECT_ID = extra.APPWRITE_PROJECT_ID;
+const APPWRITE_ENDPOINT = extra.APPWRITE_ENDPOINT;
+const APPWRITE_PLATFORM = extra.APPWRITE_PLATFORM;
+const WEB_CLIENT_ID = extra.WEB_CLIENT_ID;
+const DB_ID = extra.DB_ID;
+
+console.log("constans db id", DB_ID);
 
 export const client = new Client()
-  .setEndpoint(process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT!)
-  .setProject(process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID!)
-  .setPlatform(process.env.EXPO_PUBLIC_APPWRITE_PLATFORM!);
+  .setEndpoint(APPWRITE_ENDPOINT)
+  .setProject(APPWRITE_PROJECT_ID)
+  .setPlatform(APPWRITE_PLATFORM);
 
 export const account = new Account(client);
+const tables = new TablesDB(client);
+
+export const createHabit = async (data: Habit) => {
+  const currentUser = await account.get();
+  console.log('current user', currentUser.name)
+
+  try {
+    const row = await tables.createRow({
+      databaseId: DB_ID,
+      tableId: "habits",
+      rowId: ID.unique(),
+      data: {
+        user_id: `${currentUser.name} - ${currentUser.$id}`,
+        title: data.title,
+        description: data.description,
+        streak_count: 0,
+        last_completed: data.last_completed || 'never', //type string
+        frequency: data.frequency,
+        created_at: new Date().toISOString(),
+      },
+      permissions: [
+        'read("any")',
+        `update("user:${currentUser.$id}")`,
+        `delete("user:${currentUser.$id}")`,
+      ],
+    });
+
+    console.log("Row created:", row);
+  } catch (error) {
+    console.error("Error creating habit:", error);
+  }
+};
 
 GoogleSignin.configure({
-  webClientId:
-    "184807168382-lo2vtssr0sr3kl164021fqs4pkr62hmf.apps.googleusercontent.com",
+  webClientId: WEB_CLIENT_ID,
   offlineAccess: true,
-  scopes: ['https://www.googleapis.com/auth/drive'],
+  scopes: ["https://www.googleapis.com/auth/drive"],
   forceCodeForRefreshToken: true,
-  profileImageSize: 120
+  profileImageSize: 120,
 });

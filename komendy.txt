@@ -39,3 +39,54 @@ npm install -g expo-cli eas-cli
 npx expo start --dev-client //po zainstalowanej apk odpalic ta komende
 
 adb logcat *:E => błedy
+
+dodawanie env eas secret
+
+eas env:create --name EXPO_PUBLIC_APPWRITE_PROJECT_ID --value 68b5d078002dbb47cd23
+eas env:create --name EXPO_PUBLIC_APPWRITE_PROJECT_NAME --value Patryk
+eas env:create --name EXPO_PUBLIC_APPWRITE_ENDPOINT --value https://fra.cloud.appwrite.io/v1
+eas env:create --name EXPO_PUBLIC_APPWRITE_PLATFORM --value com.ganja.zadania
+
+eas env:create --name EXPO_PUBLIC_WEB_CLIENT_ID --value 184807168382-lo2vtssr0sr3kl164021fqs4pkr62hmf.apps.googleusercontent.com
+eas env:create --name EXPO_PUBLIC_WEB_AUTH_URI --value https://accounts.google.com/o/oauth2/auth
+eas env:create --name EXPO_PUBLIC_WEB_PROJECT_ID --value aaaa-1735980748742
+eas env:create --name EXPO_PUBLIC_WEB_TOKEN_URI --value https://oauth2.googleapis.com/token
+eas env:create --name EXPO_PUBLIC_WEB_AUTH_PROVIDER_X509_CERT_URL --value https://www.googleapis.com/oauth2/v1/certs
+eas env:create --name EXPO_PUBLIC_WEB_CLIENT_SECRET --value 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
+eas env:create --name EXPO_PUBLIC_WEB_REDIRECT_URIS --value https://fra.cloud.appwrite.io/v1/account/sessions/oauth2/callback/google/8b5d078002dbb47cd23
+
+Potem możesz podejrzeć wszystkie zmienne:
+
+eas env:list
+
+i usuwać w razie potrzeby:
+
+eas env:delete --name EXPO_PUBLIC_WEB_CLIENT_SECRET
+
+plik add-eas-env.sh
+#!/bin/bash
+
+# Publiczne zmienne (frontend)
+eas env:create --name APPWRITE_PROJECT_ID --value "68b5d078002dbb47cd23" --visibility plain --environment development,preview,production
+eas env:create --name APPWRITE_PROJECT_NAME --value "Patryk" --visibility plain --environment development,preview,production
+eas env:create --name APPWRITE_ENDPOINT --value "https://fra.cloud.appwrite.io/v1" --visibility plain --environment development,preview,production
+eas env:create --name APPWRITE_PLATFORM --value "com.ganja.zadania" --visibility plain --environment development,preview,production
+
+eas env:create --name WEB_CLIENT_ID --value "184807168382-lo2vtssr0sr3kl164021fqs4pkr62hmf.apps.googleusercontent.com" --visibility plain --environment development,preview,production
+eas env:create --name WEB_AUTH_URI --value "https://accounts.google.com/o/oauth2/auth" --visibility plain --environment development,preview,production
+eas env:create --name WEB_PROJECT_ID --value "aaaa-1735980748742" --visibility plain --environment development,preview,production
+eas env:create --name WEB_TOKEN_URI --value "https://oauth2.googleapis.com/token" --visibility plain --environment development,preview,production
+eas env:create --name WEB_AUTH_PROVIDER_X509_CERT_URL --value "https://www.googleapis.com/oauth2/v1/certs" --visibility plain --environment development,preview,production
+eas env:create --name WEB_REDIRECT_URIS --value "https://fra.cloud.appwrite.io/v1/account/sessions/oauth2/callback/google/68b5d078002dbb47cd23" --visibility plain --environment development,preview,production
+
+# Sekretna zmienna (backend / poufna)
+eas env:create --name WEB_CLIENT_SECRET --value "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" --visibility secret --environment development,preview,production
+
+Nadaj uprawnienia do wykonania:
+
+chmod +x add-eas-env.sh
+
+
+Uruchom:
+
+./add-eas-env.sh

@@ -12,7 +12,7 @@ export default function LogoutScreen() {
     try {
       await account.deleteSession({sessionId: "current"});
       setUser(null);
-      router.replace("/auth");
+      router.replace("/(auth)");
     } catch (error) {
       console.error("Błąd podczas wylogowywania:", error);
     }
