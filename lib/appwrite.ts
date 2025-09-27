@@ -8,7 +8,7 @@ import {
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Constants from "expo-constants";
 import { AppConfigExtra } from "@/env";
-import { Habit } from "@/types/type_habit";
+import { HabitType } from "@/types/type_habit";
 
 const extra = Constants.expoConfig?.extra as AppConfigExtra;
 
@@ -28,10 +28,8 @@ export const client = new Client()
 export const account = new Account(client);
 const tables = new TablesDB(client);
 
-export const createHabit = async (data: Habit) => {
+export const createHabit = async (data: HabitType) => {
   const currentUser = await account.get();
-  console.log('current user', currentUser.name)
-
   try {
     const row = await tables.createRow({
       databaseId: DB_ID,
@@ -42,9 +40,8 @@ export const createHabit = async (data: Habit) => {
         title: data.title,
         description: data.description,
         streak_count: 0,
-        last_completed: data.last_completed || 'never', //type string
+        last_completed: data.last_completed, //type string
         frequency: data.frequency,
-        created_at: new Date().toISOString(),
       },
       permissions: [
         'read("any")',

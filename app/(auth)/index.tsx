@@ -2,7 +2,7 @@ import { account } from "@/lib/appwrite";
 import { handleGoogleSignIn } from "@/lib/google";
 import useAuthStore from "@/zustand/useAuthStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -16,7 +16,7 @@ import { AppwriteException, ID } from "react-native-appwrite";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function AuthScreen() {
-  const { signData, handleInputs, error, setError } = useAuthStore();
+  const { signData, handleInputs, error, setError,setUser } = useAuthStore();
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
@@ -57,32 +57,6 @@ export default function AuthScreen() {
   };
 
   const handleSingIn = async () => {
-    const { setUser } = useAuthStore.getState();
-
-    const getSessionWithTimeout = async (timeoutMs: number) => {
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          reject(false);
-        }, timeoutMs);
-      });
-
-      try {
-        const currentSession = await Promise.race([
-          account.getSession({ sessionId: "current" }),
-          timeoutPromise,
-        ]);
-        return currentSession;
-      } catch (error) {
-        console.error("error", error);
-      }
-    };
-
-    const currentSession = await getSessionWithTimeout(2000);
-
-    if (currentSession) {
-      console.log("weszło w if current session");
-      await account.deleteSession({ sessionId: "current" });
-    }
 
     try {
       const promise = await account.createEmailPasswordSession({
@@ -102,6 +76,25 @@ export default function AuthScreen() {
       console.error("Error signUp", error);
     }
   };
+
+   useEffect(() => {
+    const checkSession = async () => {
+      try {
+        // pobieramy aktualną sesję
+        const session = await account.getSession({ sessionId: "current" });
+        if (session) {
+          // jeśli istnieje sesja, pobierz dane użytkownika
+          const user = await account.get();
+          setUser(user);
+          console.log("Current user:", user);
+        }
+      } catch (error) {
+        console.log("No active session", error);
+      }
+    };
+
+    checkSession();
+  }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

@@ -5,9 +5,6 @@ import { useEffect } from "react";
 import Constants from "expo-constants";
 import { AppConfigExtra } from "@/env";
 
-const extra = Constants.expoConfig?.extra as AppConfigExtra
-
-console.log('constans env: ', extra.APPWRITE_ENDPOINT);
 
 export default function RootLayout() {
   const { user } = useAuthStore();

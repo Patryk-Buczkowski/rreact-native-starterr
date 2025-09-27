@@ -13,7 +13,21 @@ export default function RootLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Begining",
+          title: "Today tasks",
+          tabBarIcon: ({ color, focused }) => {
+            return focused ? (
+              <FontAwesome size={24} color={color} name="home" />
+            ) : (
+              <AntDesign name="home" size={24} color="black" />
+            );
+          },
+        }}
+      />
+
+      <Tabs.Screen
+        name="createTask"
+        options={{
+          title: "Create tasks",
           tabBarIcon: ({ color, focused }) => {
             return focused ? (
               <FontAwesome size={24} color={color} name="home" />
