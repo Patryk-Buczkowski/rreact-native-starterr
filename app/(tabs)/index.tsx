@@ -1,10 +1,15 @@
-import {
-  Text,
-  View,
-} from "react-native";
+import { Text, View } from "react-native";
 import KeyboardWrapper from "../components/keyboardWrapper";
+import { useEffect } from "react";
+import { getHabits } from "@/lib/appwrite";
+import useAuthStore from "../../zustand/useAuthStore";
+
+const { user } = useAuthStore.getState();
 
 export default function Index() {
+  useEffect(() => {
+    getHabits();
+  }, [user]);
   return (
     <KeyboardWrapper>
       <View>

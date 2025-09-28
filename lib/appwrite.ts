@@ -9,6 +9,10 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Constants from "expo-constants";
 import { AppConfigExtra } from "@/env";
 import { HabitType } from "@/types/type_habit";
+import useTasksStore from "../zustand/useTasksStore";
+
+const { clearAllTasks, deleteTask, setTasks, tasks, updateTask } =
+  useTasksStore.getState();
 
 const extra = Constants.expoConfig?.extra as AppConfigExtra;
 
@@ -28,7 +32,7 @@ export const client = new Client()
 export const account = new Account(client);
 const tables = new TablesDB(client);
 
-export const createHabit = async (data: HabitType) => {
+export const createHabit = async (data: Partial<HabitType>) => {
   const currentUser = await account.get();
   try {
     const row = await tables.createRow({
@@ -53,6 +57,19 @@ export const createHabit = async (data: HabitType) => {
     console.log("Row created:", row);
   } catch (error) {
     console.error("Error creating habit:", error);
+  }
+};
+
+export const getHabits = async () => {
+  try {
+    const response = await tables.listRows<HabitType>({
+      databaseId: DB_ID,
+      tableId: "habits",
+    });
+    setTasks(response.rows);
+    console.log('tasks', tasks.length)
+  } catch (error) {
+    console.error("Error in fetching tasks", error);
   }
 };
 

@@ -1,7 +1,6 @@
 import {
   SafeAreaView,
   View,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
@@ -20,7 +19,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 export default function CreateScreen() {
-  const initialValues: HabitType = {
+  const initialValues: Partial<HabitType> = {
     user_id: "",
     description: "",
     frequency: "daily",
@@ -29,7 +28,7 @@ export default function CreateScreen() {
     title: "",
   };
 
-  const handleCrateHabit = async (newTask: HabitType) => {
+  const handleCrateHabit = async (newTask: Partial<HabitType>) => {
     try {
       await createHabit(newTask);
     } catch (error) {
@@ -101,7 +100,8 @@ export default function CreateScreen() {
                 <SafeAreaView>
                   <SegmentedButtons
                     style={{ marginBottom: 15 }}
-                    value={values.frequency}
+                    value={values.frequency || "daily"}
+                    theme={{ colors: { secondaryContainer: 'green', onSecondaryContainer: 'yellow' } }}                    
                     onValueChange={(val) => setFieldValue("frequency", val)}
                     buttons={frequencies.map((item, index) => ({
                       value: item,
