@@ -1,7 +1,4 @@
-import {
-  SafeAreaView,
-  View,
-} from "react-native";
+import { SafeAreaView, View } from "react-native";
 import {
   Button,
   HelperText,
@@ -117,8 +114,9 @@ export default function CreateScreen() {
                   value={values.frequency || "daily"}
                   theme={{
                     colors: {
-                      secondaryContainer: "#000BB0",
-                      onSecondaryContainer: "#E0E7FF",
+                      secondaryContainer: "#000BB0", // tło aktywnego
+                      onSecondaryContainer: "#E0E7FF", // text aktywny
+                      onSurface: "#A5B4FC", //text nieaktywny 
                     },
                   }}
                   onValueChange={(val) => setFieldValue("frequency", val)}
