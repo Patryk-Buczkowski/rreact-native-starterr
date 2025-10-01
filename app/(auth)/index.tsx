@@ -13,21 +13,17 @@ import {
   View,
 } from "react-native";
 import { AppwriteException, ID } from "react-native-appwrite";
-import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { Button, Text, TextInput, useTheme, Surface } from "react-native-paper";
 
 export default function AuthScreen() {
-  const { signData, handleInputs, error, setError,setUser } = useAuthStore();
+  const { signData, handleInputs, error, setError, setUser } = useAuthStore();
   const theme = useTheme();
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
 
-  const handleSwitchMode = () => {
-    setIsSignUp((prev) => !prev);
-  };
+  const handleSwitchMode = () => setIsSignUp((prev) => !prev);
 
   const handleSingUp = async () => {
-    console.log("sing up");
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!signData.email || !signData.password) {
       setError("Fill both inputs 😅");
       return;
@@ -41,15 +37,11 @@ export default function AuthScreen() {
     setError("");
 
     try {
-      await account.create(
-        ID.unique(),
-        signData.email,
-        signData.password
-      );
+      await account.create(ID.unique(), signData.email, signData.password);
     } catch (error) {
       if (error instanceof AppwriteException && error.code === 409) {
         console.error("Błąd: Ten adres e-mail jest już w użyciu.");
-        return { error: "E-mail jest już zajęty." };
+        return setError("E-mail jest już zajęty.");
       }
       setError("Something went wrong with authentication");
       console.error(error);
@@ -57,42 +49,32 @@ export default function AuthScreen() {
   };
 
   const handleSingIn = async () => {
-
     try {
       const promise = await account.createEmailPasswordSession({
-        email: `${signData.email}`,
-        password: `${signData.password}`,
+        email: signData.email,
+        password: signData.password,
       });
 
-      setUser({
-        $id: promise.userId,
-        email: promise.providerUid,
-      });
-
+      setUser({ $id: promise.userId, email: promise.providerUid });
       const currentUser = await account.get();
-
       setUser(currentUser);
     } catch (error) {
-      console.error("Error signUp", error);
+      console.error("Error signIn", error);
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const checkSession = async () => {
       try {
-        // pobieramy aktualną sesję
         const session = await account.getSession({ sessionId: "current" });
         if (session) {
-          // jeśli istnieje sesja, pobierz dane użytkownika
           const user = await account.get();
           setUser(user);
-          console.log("Current user:", user);
         }
       } catch (error) {
         console.log("No active session", error);
       }
     };
-
     checkSession();
   }, []);
 
@@ -100,53 +82,49 @@ export default function AuthScreen() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={style.container}
+        style={styles.container}
       >
-        <View style={style.item}>
-          <Text variant="headlineMedium" style={style.title}>
+        <Surface style={styles.card} elevation={4}>
+          <Text variant="headlineMedium" style={styles.title}>
             {isSignUp ? "Welcome back" : "Create account"}
           </Text>
 
           <TextInput
             label="Email"
             onChangeText={(value) => handleInputs(value, "email")}
-            placeholderTextColor={"#666"}
-            style={style.textInput}
-            aria-label="email"
+            placeholder="example@gmail.com"
+            placeholderTextColor="#A5B4FC"
+            style={styles.textInput}
             autoCapitalize="none"
             keyboardType="email-address"
-            placeholder="example@gmail.com"
             mode="outlined"
+            textColor="#E0E7FF"
+            activeOutlineColor="#4D5DFA"
+            outlineColor="#1E40AF"
           />
 
           <TextInput
-            onChangeText={(value) => handleInputs(value, "password")}
             label="Password"
+            onChangeText={(value) => handleInputs(value, "password")}
             placeholder="Type Your password"
-            placeholderTextColor={"#666"}
-            style={style.textInput}
-            aria-label="password"
-            keyboardType="default"
-            secureTextEntry={true}
+            placeholderTextColor="#A5B4FC"
+            style={styles.textInput}
+            secureTextEntry
             mode="outlined"
+            textColor="#E0E7FF"
+            activeOutlineColor="#4D5DFA"
+            outlineColor="#1E40AF"
           />
+
           {error && (
-            <View>
-              <Text
-                style={{
-                  color: theme.colors.error,
-                  fontWeight: "600",
-                  marginBottom: 16,
-                }}
-              >
-                {error}
-              </Text>
-            </View>
+            <Text style={styles.errorText}>{error}</Text>
           )}
 
           <Button
             onPress={isSignUp ? handleSingIn : handleSingUp}
-            style={style.buttonSubmit}
+            textColor="#000428"
+            buttonColor="#4D5DFA"
+            style={styles.buttonSubmit}
             mode="contained"
           >
             {isSignUp ? "Sign in" : "Sign up"}
@@ -154,68 +132,72 @@ export default function AuthScreen() {
 
           <Button
             onPress={handleSwitchMode}
-            style={style.buttonText}
             mode="text"
+            textColor="#E0E7FF"
           >
             {isSignUp
               ? "Do not have an account? Sign up 😁"
-              : "Do You alredy have an account? Sign in 😎"}
+              : "Do You already have an account? Sign in 😎"}
           </Button>
 
           <TouchableOpacity
             onPress={handleGoogleSignIn}
-            style={style.buttonGoogle}
+            style={styles.buttonGoogle}
           >
-            <AntDesign name="google" size={24} color="black" />
-            <Text style={style.buttonText}>Zaloguj przez Google</Text>
+            <AntDesign name="google" size={24} color="#000428" />
+            <Text style={{ color: "#000428" }}>Zaloguj przez Google</Text>
           </TouchableOpacity>
-        </View>
+        </Surface>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
 
-const style = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center" },
-  item: {
-    padding: 10,
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: 16,
+    backgroundColor: "#000428",
+  },
+  card: {
+    padding: 20,
+    borderRadius: 12,
+    backgroundColor: "#000BB0",
+    borderWidth: 1,
+    borderColor: "#4D5DFA",
   },
   title: {
     textAlign: "center",
     marginBottom: 24,
+    color: "#E0E7FF",
   },
   textInput: {
-    width: "100%",
     marginBottom: 12,
-    padding: 8,
     borderRadius: 8,
-    color: "red",
+  },
+  errorText: {
+    color: "#F87171",
+    fontWeight: "600",
+    marginBottom: 16,
+    textAlign: "center",
   },
   buttonSubmit: {
-    borderColor: "purple",
+    marginTop: 12,
+    marginBottom: 8,
+    borderRadius: 8,
   },
-  buttonText: {},
   buttonGoogle: {
     height: 50,
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
     flexDirection: "row",
     marginTop: 10,
     padding: 5,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#C7D2FE",
     borderRadius: 100,
-    borderColor: "#666",
+    borderColor: "#4D5DFA",
     borderWidth: 1,
-    marginBottom: 10,
   },
 });
-
-{
-  /* Platform.OS === 'ios' ? 'padding' : 'height'
-
-'padding': Na iOS klawiatura jest zintegrowana z systemem operacyjnym i jej wysokość jest stała. Właściwość padding dodaje dolny margines, aby przesunąć elementy w górę, co jest idealne dla tego systemu.
-
-'height': Na Androidzie klawiatura może mieć zmienną wysokość, a system działa inaczej. Użycie 'height' pozwala na automatyczne dopasowanie wysokości widoku, co zapewnia lepsze działanie w różnych wersjach Androida. */
-}

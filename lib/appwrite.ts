@@ -1,7 +1,6 @@
 import {
   Account,
   Client,
-  Databases,
   ID,
   TablesDB,
 } from "react-native-appwrite";
@@ -66,8 +65,8 @@ export const getHabits = async () => {
       databaseId: DB_ID,
       tableId: "habits",
     });
-    setTasks(response.rows);
-    console.log('tasks', tasks.length)
+    console.log('task resp', response.total)
+    setTasks(response.rows);    
   } catch (error) {
     console.error("Error in fetching tasks", error);
   }
